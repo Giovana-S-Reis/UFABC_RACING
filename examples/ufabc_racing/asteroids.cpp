@@ -86,53 +86,50 @@ Asteroids::Asteroid Asteroids::makeAsteroid(glm::vec2 translation,
                                             float scale) {
   Asteroid asteroid;
 
-  auto &re{m_randomEngine}; // Shortcut
+  // Define os vértices do asteroid com formato fixo
+  std::array positions{
+      glm::vec2{-02.5f, +15.5f}, glm::vec2{+2.5f, +15.5f},
+      glm::vec2{+2.5f, -15.5f}, glm::vec2{-02.5f, -15.5f},
+      glm::vec2{-02.5f, +10.0f}, glm::vec2{-08.0f, +05.5f},
+      glm::vec2{-08.0f, +10.0f}, glm::vec2{+02.5f, +10.0f},
+      glm::vec2{+08.0f, +05.5f}, glm::vec2{+08.0f, +10.0f},
+      glm::vec2{-02.5f, -10.0f}, glm::vec2{-08.0f, -15.5f},
+      glm::vec2{-08.0f, -10.0f}, glm::vec2{+02.5f, -10.0f},
+      glm::vec2{+08.0f, -15.5f}, glm::vec2{+08.0f, -10.0f},
+      glm::vec2{-02.5f, +05.5f}, glm::vec2{+02.5f, +05.5f},
+  };
 
-  // Randomly pick the number of sides
-  std::uniform_int_distribution randomSides(6, 20);
-  asteroid.m_polygonSides = randomSides(re);
+  // Normalize os vértices para escala
+  for (auto &position : positions) {
+    position /= glm::vec2{15.5f, 15.5f};
+  }
 
-  // Get a random color (actually, a grayscale)
-  std::uniform_real_distribution randomIntensity(0.5f, 1.0f);
-  asteroid.m_color = glm::vec4(randomIntensity(re));
+  
 
+  // Defina a escala, translação, velocidade e outras propriedades do asteroid
+  asteroid.m_polygonSides = positions.size() - 1;
+  asteroid.m_color = glm::vec4(1.0f); // Cor padrão
   asteroid.m_color.a = 1.0f;
   asteroid.m_rotation = 0.0f;
   asteroid.m_scale = scale;
   asteroid.m_translation = translation;
+  asteroid.m_angularVelocity = m_randomDist(m_randomEngine);
 
-  // Get a random angular velocity
-  asteroid.m_angularVelocity = m_randomDist(re);
-
-  // Get a random direction
-  glm::vec2 const direction{m_randomDist(re), m_randomDist(re)};
-  asteroid.m_velocity = glm::normalize(direction) / 7.0f;
-
-  // Create geometry data
-  std::vector<glm::vec2> positions{{0, 0}};
-  auto const step{M_PI * 2 / asteroid.m_polygonSides};
-  std::uniform_real_distribution randomRadius(0.8f, 1.0f);
-  for (auto const angle : iter::range(0.0, M_PI * 2, step)) {
-    auto const radius{randomRadius(re)};
-    positions.emplace_back(radius * std::cos(angle), radius * std::sin(angle));
-  }
-  positions.push_back(positions.at(1));
-
-  // Generate VBO
+  // Crie o VBO (Buffer de Vértices)
   abcg::glGenBuffers(1, &asteroid.m_VBO);
   abcg::glBindBuffer(GL_ARRAY_BUFFER, asteroid.m_VBO);
   abcg::glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec2),
                      positions.data(), GL_STATIC_DRAW);
   abcg::glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-  // Get location of attributes in the program
+  // Obtenha a localização dos atributos no programa
   auto const positionAttribute{
       abcg::glGetAttribLocation(m_program, "inPosition")};
 
-  // Create VAO
+  // Crie o VAO (Array de Vértices)
   abcg::glGenVertexArrays(1, &asteroid.m_VAO);
 
-  // Bind vertex attributes to current VAO
+  // Vincule os atributos de vértices ao VAO
   abcg::glBindVertexArray(asteroid.m_VAO);
 
   abcg::glBindBuffer(GL_ARRAY_BUFFER, asteroid.m_VBO);
@@ -141,7 +138,7 @@ Asteroids::Asteroid Asteroids::makeAsteroid(glm::vec2 translation,
                               nullptr);
   abcg::glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-  // End of binding to current VAO
+  // Fim da vinculação ao VAO
   abcg::glBindVertexArray(0);
 
   return asteroid;
