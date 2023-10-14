@@ -19,6 +19,7 @@ public:
   struct Asteroid {
     GLuint m_VAO{};
     GLuint m_VBO{};
+    GLuint m_EBO{};
 
     float m_angularVelocity{};
     glm::vec4 m_color{1};
@@ -40,6 +41,7 @@ private:
   GLint m_rotationLoc{};
   GLint m_translationLoc{};
   GLint m_scaleLoc{};
+  GLuint m_EBO{};
 
   std::default_random_engine m_randomEngine;
   std::uniform_real_distribution<float> m_randomDist{-1.0f, 1.0f};

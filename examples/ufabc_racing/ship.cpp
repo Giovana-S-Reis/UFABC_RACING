@@ -16,7 +16,7 @@ void Ship::create(GLuint program) {
 
   // Reset ship attributes
   m_rotation = 0.0f;
-  m_translation = glm::vec2(0.2f,0.0f);
+  m_translation = glm::vec2(0.0f,0.0f);
   m_velocity = glm::vec2(0);
 
   // clang-format off
@@ -131,17 +131,12 @@ void Ship::destroy() {
 }
 
 void Ship::update(GameData const &gameData, float deltaTime) {
-  // Rotate
-  if (gameData.m_input[gsl::narrow<size_t>(Input::Left)])
-    m_translation.x = glm::wrapAngle(m_translation.x - 0.4f * deltaTime);
-  if (gameData.m_input[gsl::narrow<size_t>(Input::Right)])
-    m_translation.x = glm::wrapAngle(m_translation.x + 0.4f * deltaTime);
-
-  // Apply thrust
-  if (gameData.m_input[gsl::narrow<size_t>(Input::Up)] &&
-      gameData.m_state == State::Playing) {
-    // Thrust in the forward vector
-    //auto const forward{glm::rotate(glm::vec2{0.0f, 1.0f}, m_rotation)};
-    //m_velocity += forward * deltaTime;
+  if (gameData.m_state != State::Playing) {
+    // Stop ship's movement when not playing
+    m_velocity = glm::vec2(0.0f);
+  } else {
+    // Move the ship forward in its current direction
+    auto const forward = glm::rotate(glm::vec2{0.0f, 1.0f}, m_rotation);
+    m_translation += forward * m_velocity * deltaTime;
   }
 }

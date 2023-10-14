@@ -39,8 +39,7 @@ void Asteroids::paint() {
 
     abcg::glUniform4fv(m_colorLoc, 1, &asteroid.m_color.r);
     abcg::glUniform1f(m_scaleLoc, asteroid.m_scale);
-    abcg::glUniform1f(m_rotationLoc, asteroid.m_rotation);
-
+    
     for (auto i : {-2, 0, 2}) {
       for (auto j : {-2, 0, 2}) {
         abcg::glUniform2f(m_translationLoc, asteroid.m_translation.x + j,
@@ -56,6 +55,7 @@ void Asteroids::paint() {
   abcg::glUseProgram(0);
 }
 
+
 void Asteroids::destroy() {
   for (auto &asteroid : m_asteroids) {
     abcg::glDeleteBuffers(1, &asteroid.m_VBO);
@@ -65,10 +65,8 @@ void Asteroids::destroy() {
 
 void Asteroids::update(const Ship &ship, float deltaTime) {
   for (auto &asteroid : m_asteroids) {
-    asteroid.m_translation -= ship.m_velocity * deltaTime;
-    asteroid.m_rotation = glm::wrapAngle(
-        asteroid.m_rotation + asteroid.m_angularVelocity * deltaTime);
-    asteroid.m_translation += asteroid.m_velocity * deltaTime;
+    // Atualize a posição no eixo Y para fazer os asteroides deslizarem para baixo
+    asteroid.m_translation.y -= deltaTime * 0.5f;
 
     // Wrap-around
     if (asteroid.m_translation.x < -1.0f)
@@ -81,6 +79,7 @@ void Asteroids::update(const Ship &ship, float deltaTime) {
       asteroid.m_translation.y -= 2.0f;
   }
 }
+
 
 Asteroids::Asteroid Asteroids::makeAsteroid(glm::vec2 translation,
                                             float scale) {
@@ -104,7 +103,18 @@ Asteroids::Asteroid Asteroids::makeAsteroid(glm::vec2 translation,
     position /= glm::vec2{15.5f, 15.5f};
   }
 
-  
+     std::array const indices{0, 1, 2,
+                           0, 2, 3,
+                           5,4,6,
+                           5,4,16,
+                           7,8,9,
+                           7 ,8,17,
+                           3,10,11,
+                           10,11,12,
+                           2,13,14,
+                           13,14,15};
+  // clang-format on
+
 
   // Defina a escala, translação, velocidade e outras propriedades do asteroid
   asteroid.m_polygonSides = positions.size() - 1;
@@ -125,6 +135,13 @@ Asteroids::Asteroid Asteroids::makeAsteroid(glm::vec2 translation,
   // Obtenha a localização dos atributos no programa
   auto const positionAttribute{
       abcg::glGetAttribLocation(m_program, "inPosition")};
+
+  // Generate EBO
+  abcg::glGenBuffers(1, &m_EBO);
+  abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+  abcg::glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices.data(),
+                     GL_STATIC_DRAW);
+  abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   // Crie o VAO (Array de Vértices)
   abcg::glGenVertexArrays(1, &asteroid.m_VAO);
