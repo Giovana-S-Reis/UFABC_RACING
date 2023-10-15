@@ -24,7 +24,7 @@ void StarLayers::create(GLuint program, int quantity) {
   for (auto &&[index, layer] : iter::enumerate(m_starLayers)) {
     // Create geometry data for the stars of this layer
     layer.m_pointSize = 10.0f / (1.0f + index);
-    layer.m_quantity = quantity * (gsl::narrow<int>(index) + 1);
+    layer.m_quantity = quantity * (gsl::narrow<int>(index) + 1) * 0;
     layer.m_translation = {};
 
     std::vector<glm::vec3> data;

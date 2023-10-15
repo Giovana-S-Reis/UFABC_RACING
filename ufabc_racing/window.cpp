@@ -76,7 +76,7 @@ void Window::onCreate() {
                                  {.source = assetsPath + "stars.frag",
                                   .stage = abcg::ShaderStage::Fragment}});
 
-  abcg::glClearColor(0, 0, 0, 1);
+  abcg::glClearColor(0.5f, 0.5f, 0.5f, 1);
 
 #if !defined(__EMSCRIPTEN__)
   abcg::glEnable(GL_PROGRAM_POINT_SIZE);

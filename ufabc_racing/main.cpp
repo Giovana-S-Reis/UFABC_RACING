@@ -5,13 +5,13 @@ int main(int argc, char **argv) {
     abcg::Application app(argc, argv);
 
     Window window;
-    window.setOpenGLSettings({.samples = 4});
+    window.setOpenGLSettings({.samples = 16});
     window.setWindowSettings({
-        .width = 600,
-        .height = 600,
+        .width = 900,
+        .height = 900,
         .showFPS = false,
         .showFullscreenButton = false,
-        .title = "Asteroids",
+        .title = "Carrinho do Sr. Omar",
     });
 
     app.run(window);

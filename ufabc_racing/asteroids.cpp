@@ -118,7 +118,7 @@ Asteroids::Asteroid Asteroids::makeAsteroid(glm::vec2 translation,
 
   // Defina a escala, translação, velocidade e outras propriedades do asteroid
   asteroid.m_polygonSides = positions.size() - 1;
-  asteroid.m_color = glm::vec4(1.0f); // Cor padrão
+  asteroid.m_color = glm::vec4{0,1,0,1}; // Cor verde
   asteroid.m_color.a = 1.0f;
   asteroid.m_rotation = 0.0f;
   asteroid.m_scale = scale;
