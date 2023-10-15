@@ -1,2 +1,1 @@
 add_subdirectory(helloworld)
-add_subdirectory(ufabc_racing)
