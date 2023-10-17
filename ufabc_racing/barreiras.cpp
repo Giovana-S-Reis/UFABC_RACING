@@ -1,8 +1,8 @@
-#include "asteroids.hpp"
+#include "barreiras.hpp"
 
 #include <glm/gtx/fast_trigonometry.hpp>
 
-void Asteroids::create(GLuint program, int quantity) {
+void Barreiras::create(GLuint program, int quantity) {
   destroy();
 
   m_randomEngine.seed(
@@ -16,22 +16,22 @@ void Asteroids::create(GLuint program, int quantity) {
   m_scaleLoc = abcg::glGetUniformLocation(m_program, "scale");
   m_translationLoc = abcg::glGetUniformLocation(m_program, "translation");
 
-  // Create asteroids
-  m_asteroids.clear();
-  m_asteroids.resize(quantity);
+  // Create barreiras
+  m_barreiras.clear();
+  m_barreiras.resize(quantity);
 
-  for (auto &asteroid : m_asteroids) {
-    asteroid = makeAsteroid();
+  for (auto &asteroid : m_barreiras) {
+    asteroid = makeBarreira();
 
-    // Make sure the asteroid won't collide with the ship
+    // Make sure the asteroid won't collide with the carrinho
       asteroid.m_translation = {m_randomDist(m_randomEngine), 1.5f};
   }
 }
 
-void Asteroids::paint() {
+void Barreiras::paint() {
   abcg::glUseProgram(m_program);
 
-  for (auto const &asteroid : m_asteroids) {
+  for (auto const &asteroid : m_barreiras) {
     abcg::glBindVertexArray(asteroid.m_VAO);
 
     abcg::glUniform4fv(m_colorLoc, 1, &asteroid.m_color.r);
@@ -52,24 +52,24 @@ void Asteroids::paint() {
 }
 
 
-void Asteroids::destroy() {
-  for (auto &asteroid : m_asteroids) {
+void Barreiras::destroy() {
+  for (auto &asteroid : m_barreiras) {
     abcg::glDeleteBuffers(1, &asteroid.m_VBO);
     abcg::glDeleteVertexArrays(1, &asteroid.m_VAO);
   }
 }
 
-void Asteroids::update(const Ship &ship, float deltaTime) {
-  for (auto &asteroid : m_asteroids) {
+void Barreiras::update(const Carrinho &carrinho, float deltaTime) {
+  for (auto &asteroid : m_barreiras) {
     // Atualize a posição no eixo Y para fazer os asteroides deslizarem para baixo
     asteroid.m_translation.y -= deltaTime * 1.2f;
   }
 }
 
 
-Asteroids::Asteroid Asteroids::makeAsteroid(glm::vec2 translation,
+Barreiras::Barreira Barreiras::makeBarreira(glm::vec2 translation,
                                             float scale) {
-  Asteroid asteroid;
+  Barreira asteroid;
 
   // Define os vértices do asteroid com formato fixo
   std::array positions{

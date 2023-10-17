@@ -1,9 +1,9 @@
-#include "ship.hpp"
+#include "carrinho.hpp"
 
 #include <glm/gtx/fast_trigonometry.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
-void Ship::create(GLuint program) {
+void Carrinho::create(GLuint program) {
   destroy();
 
   m_program = program;
@@ -14,14 +14,14 @@ void Ship::create(GLuint program) {
   m_scaleLoc = abcg::glGetUniformLocation(m_program, "scale");
   m_translationLoc = abcg::glGetUniformLocation(m_program, "translation");
 
-  // Reset ship attributes
+  // Reset carrinho attributes
   m_rotation = 0.0f;
   m_translation = glm::vec2(0.0f,-0.5f);
   m_velocity = glm::vec2(0);
 
   // clang-format off
   std::array positions{
-      // Ship body
+      // Carrinho body
       glm::vec2{-10.0f, +06.0f}, glm::vec2{-10.0f, +09.0f},
       glm::vec2{-10.0f, +12.0f}, glm::vec2{-04.0f, +12.0f},
       glm::vec2{+04.0f, +12.0f}, glm::vec2{+10.0f, +12.0f},
@@ -89,7 +89,7 @@ void Ship::create(GLuint program) {
   abcg::glBindVertexArray(0);
 }
 
-void Ship::paint(const GameData &gameData) {
+void Carrinho::paint(const GameData &gameData) {
   if (gameData.m_state != State::Playing)
     return;
 
@@ -109,18 +109,18 @@ void Ship::paint(const GameData &gameData) {
   abcg::glUseProgram(0);
 }
 
-void Ship::destroy() {
+void Carrinho::destroy() {
   abcg::glDeleteBuffers(1, &m_VBO);
   abcg::glDeleteBuffers(1, &m_EBO);
   abcg::glDeleteVertexArrays(1, &m_VAO);
 }
 
-void Ship::update(GameData const &gameData, float deltaTime) {
+void Carrinho::update(GameData const &gameData, float deltaTime) {
   if (gameData.m_state != State::Playing) {
-    // Stop ship's movement when not playing
+    // Stop carrinho's movement when not playing
     m_velocity = glm::vec2(0.0f);
   } else {
-    // Move the ship forward in its current direction
+    // Move the carrinho forward in its current direction
     auto const forward = glm::rotate(glm::vec2{0.0f, 1.0f}, m_rotation);
     m_translation += forward * m_velocity * deltaTime;
   }

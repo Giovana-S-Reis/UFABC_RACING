@@ -7,16 +7,16 @@
 #include "abcgOpenGL.hpp"
 
 #include "gamedata.hpp"
-#include "ship.hpp"
+#include "carrinho.hpp"
 
-class Asteroids {
+class Barreiras {
 public:
   void create(GLuint program, int quantity);
   void paint();
   void destroy();
-  void update(const Ship &ship, float deltaTime);
+  void update(const Carrinho &carrinho, float deltaTime);
 
-  struct Asteroid {
+  struct Barreira {
     GLuint m_VAO{};
     GLuint m_VBO{};
     GLuint m_EBO{};
@@ -31,9 +31,9 @@ public:
     bool m_hit{};
   };
 
-  std::list<Asteroid> m_asteroids;
+  std::list<Barreira> m_barreiras;
 
-  Asteroid makeAsteroid(glm::vec2 translation = {}, float scale = 0.25f);
+  Barreira makeBarreira(glm::vec2 translation = {}, float scale = 0.25f);
 
 private:
   GLuint m_program{};

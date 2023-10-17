@@ -5,7 +5,7 @@
 
 #include "gamedata.hpp"
 
-class Ship {
+class Carrinho {
 public:
   void create(GLuint program);
   void paint(GameData const &gameData);

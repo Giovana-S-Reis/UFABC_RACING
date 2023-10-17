@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
         .height = 900,
         .showFPS = false,
         .showFullscreenButton = false,
-        .title = "Carrinho do Sr. Omar",
+        .title = "UFABC Racing",
     });
 
     app.run(window);
