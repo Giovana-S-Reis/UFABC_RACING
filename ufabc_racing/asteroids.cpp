@@ -24,10 +24,7 @@ void Asteroids::create(GLuint program, int quantity) {
     asteroid = makeAsteroid();
 
     // Make sure the asteroid won't collide with the ship
-    do {
-      asteroid.m_translation = {m_randomDist(m_randomEngine),
-                                m_randomDist(m_randomEngine)};
-    } while (glm::length(asteroid.m_translation) < 0.5f);
+      asteroid.m_translation = {m_randomDist(m_randomEngine), 1.5f};
   }
 }
 
@@ -39,13 +36,12 @@ void Asteroids::paint() {
 
     abcg::glUniform4fv(m_colorLoc, 1, &asteroid.m_color.r);
     abcg::glUniform1f(m_scaleLoc, asteroid.m_scale);
-    
-    for (auto i : {-2, 0, 2}) {
-      for (auto j : {-2, 0, 2}) {
-        abcg::glUniform2f(m_translationLoc, asteroid.m_translation.x + j,
-                          asteroid.m_translation.y + i);
 
-        abcg::glDrawArrays(GL_TRIANGLE_FAN, 0, asteroid.m_polygonSides + 2);
+    for (auto i : {0, 0, 0}) {
+      for (auto j : {0, 0, 0}) {
+        abcg::glUniform2f(m_translationLoc, asteroid.m_translation.x + j, asteroid.m_translation.y + i);
+
+        abcg::glDrawArrays(GL_TRIANGLE_FAN, 0, 14*3);
       }
     }
 
@@ -66,17 +62,7 @@ void Asteroids::destroy() {
 void Asteroids::update(const Ship &ship, float deltaTime) {
   for (auto &asteroid : m_asteroids) {
     // Atualize a posição no eixo Y para fazer os asteroides deslizarem para baixo
-    asteroid.m_translation.y -= deltaTime * 0.5f;
-
-    // Wrap-around
-    if (asteroid.m_translation.x < -1.0f)
-      asteroid.m_translation.x += 2.0f;
-    if (asteroid.m_translation.x > +1.0f)
-      asteroid.m_translation.x -= 2.0f;
-    if (asteroid.m_translation.y < -1.0f)
-      asteroid.m_translation.y += 2.0f;
-    if (asteroid.m_translation.y > +1.0f)
-      asteroid.m_translation.y -= 2.0f;
+    asteroid.m_translation.y -= deltaTime * 1.2f;
   }
 }
 
@@ -87,38 +73,24 @@ Asteroids::Asteroid Asteroids::makeAsteroid(glm::vec2 translation,
 
   // Define os vértices do asteroid com formato fixo
   std::array positions{
-      glm::vec2{-02.5f, +15.5f}, glm::vec2{+2.5f, +15.5f},
-      glm::vec2{+2.5f, -15.5f}, glm::vec2{-02.5f, -15.5f},
-      glm::vec2{-02.5f, +10.0f}, glm::vec2{-08.0f, +05.5f},
-      glm::vec2{-08.0f, +10.0f}, glm::vec2{+02.5f, +10.0f},
-      glm::vec2{+08.0f, +05.5f}, glm::vec2{+08.0f, +10.0f},
-      glm::vec2{-02.5f, -10.0f}, glm::vec2{-08.0f, -15.5f},
-      glm::vec2{-08.0f, -10.0f}, glm::vec2{+02.5f, -10.0f},
-      glm::vec2{+08.0f, -15.5f}, glm::vec2{+08.0f, -10.0f},
-      glm::vec2{-02.5f, +05.5f}, glm::vec2{+02.5f, +05.5f},
+      glm::vec2{-3.0f, -1.0f}, glm::vec2{-3.0f, +1.0f},
+      glm::vec2{+3.0f, +1.0f}, glm::vec2{+3.0f, -1.0f},
   };
 
   // Normalize os vértices para escala
   for (auto &position : positions) {
-    position /= glm::vec2{15.5f, 15.5f};
+    position /= glm::vec2{5.0f, 5.0f}; 
   }
 
      std::array const indices{0, 1, 2,
-                           0, 2, 3,
-                           5,4,6,
-                           5,4,16,
-                           7,8,9,
-                           7 ,8,17,
-                           3,10,11,
-                           10,11,12,
-                           2,13,14,
-                           13,14,15};
+                              0, 3, 2,
+                              };
   // clang-format on
 
 
   // Defina a escala, translação, velocidade e outras propriedades do asteroid
   asteroid.m_polygonSides = positions.size() - 1;
-  asteroid.m_color = glm::vec4{0,1,0,1}; // Cor verde
+  asteroid.m_color = glm::vec4{1,0,0,1}; // Cor verde
   asteroid.m_color.a = 1.0f;
   asteroid.m_rotation = 0.0f;
   asteroid.m_scale = scale;

@@ -3,53 +3,17 @@
 void Window::onEvent(SDL_Event const &event) {
   // Keyboard events
   if (event.type == SDL_KEYDOWN) {
-    // if (event.key.keysym.sym == SDLK_SPACE)
-    //   m_gameData.m_input.set(gsl::narrow<size_t>(Input::Fire));
-    // if (event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_w)
-    //   m_gameData.m_input.set(gsl::narrow<size_t>(Input::Up));
-    // if (event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_s)
-    //   m_gameData.m_input.set(gsl::narrow<size_t>(Input::Down));
     if (event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_a)
       m_gameData.m_input.set(gsl::narrow<size_t>(Input::Left));
     if (event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d)
       m_gameData.m_input.set(gsl::narrow<size_t>(Input::Right));
   }
   if (event.type == SDL_KEYUP) {
-    // if (event.key.keysym.sym == SDLK_SPACE)
-    //   m_gameData.m_input.reset(gsl::narrow<size_t>(Input::Fire));
-    // if (event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_w)
-    //   m_gameData.m_input.reset(gsl::narrow<size_t>(Input::Up));
-    // if (event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_s)
-    //   m_gameData.m_input.reset(gsl::narrow<size_t>(Input::Down));
     if (event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_a)
       m_gameData.m_input.reset(gsl::narrow<size_t>(Input::Left));
     if (event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d)
       m_gameData.m_input.reset(gsl::narrow<size_t>(Input::Right));
   }
-
-
-  // Mouse events
-  // if (event.type == SDL_MOUSEBUTTONDOWN) {
-  //   if (event.button.button == SDL_BUTTON_LEFT)
-  //     m_gameData.m_input.set(gsl::narrow<size_t>(Input::Fire));
-  //   if (event.button.button == SDL_BUTTON_RIGHT)
-  //     m_gameData.m_input.set(gsl::narrow<size_t>(Input::Up));
-  // }
-  // if (event.type == SDL_MOUSEBUTTONUP) {
-  //   if (event.button.button == SDL_BUTTON_LEFT)
-  //     m_gameData.m_input.reset(gsl::narrow<size_t>(Input::Fire));
-  //   if (event.button.button == SDL_BUTTON_RIGHT)
-  //     m_gameData.m_input.reset(gsl::narrow<size_t>(Input::Up));
-  // }
-  //if (event.type == SDL_MOUSEMOTION) {
-  //  glm::ivec2 mousePosition;
-  //  SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
-
-  //  glm::vec2 direction{mousePosition.x - m_viewportSize.x / 2,
-  //                      -(mousePosition.y - m_viewportSize.y / 2)};
-
-  //  m_ship.m_rotation = std::atan2(direction.y, direction.x) - M_PI_2;
-  //}
 }
 
 void Window::onCreate() {
@@ -94,16 +58,19 @@ void Window::restart() {
 
   m_starLayers.create(m_starsProgram, 25);
   m_ship.create(m_objectsProgram);
-  m_asteroids.create(m_objectsProgram, 3);
+  m_asteroids.create(m_objectsProgram, m_randomDist(m_randomEngine));
   m_bullets.create(m_objectsProgram);
+
+  control_time = 0;
+  score = 0;
 }
 
 void Window::onUpdate() {
   auto const deltaTime{gsl::narrow_cast<float>(getDeltaTime())};
 
-  // Wait 5 seconds before restarting
+  // Wait 2 seconds before restarting
   if (m_gameData.m_state != State::Playing &&
-      m_restartWaitTimer.elapsed() > 5) {
+      m_restartWaitTimer.elapsed() > 2) {
     restart();
     return;
   }
@@ -129,6 +96,15 @@ void Window::onUpdate() {
   if (m_gameData.m_state == State::Playing) {
     checkCollisions();
     checkWinCondition();
+  }
+
+  if (control_time > 2.5f){
+    m_asteroids.create(m_objectsProgram, (m_randomDist(m_randomEngine) + score/10));
+    control_time = 0;
+    score++;
+  }
+  else{
+    control_time += deltaTime;
   }
 }
 
@@ -238,7 +214,7 @@ void Window::checkCollisions() {
 }
 
 void Window::checkWinCondition() {
-  if (m_asteroids.m_asteroids.empty()) {
+  if (m_asteroids.m_asteroids.empty() || score >= 30) {
     m_gameData.m_state = State::Win;
     m_restartWaitTimer.restart();
   }

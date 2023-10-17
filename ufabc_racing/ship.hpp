@@ -12,9 +12,9 @@ public:
   void destroy();
   void update(GameData const &gameData, float deltaTime);
 
-  glm::vec4 m_color{1,0,0,1};
+  glm::vec4 m_color{1,1,0,1};
   float m_rotation{};
-  float m_scale{0.125f};
+  float m_scale{0.1f};
   glm::vec2 m_translation{};
   glm::vec2 m_velocity{};
 

@@ -44,7 +44,7 @@ private:
   GLuint m_EBO{};
 
   std::default_random_engine m_randomEngine;
-  std::uniform_real_distribution<float> m_randomDist{-1.0f, 1.0f};
+  std::uniform_real_distribution<float> m_randomDist{-0.8f, +0.8f};
 };
 
 #endif

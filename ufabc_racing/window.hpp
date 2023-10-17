@@ -38,6 +38,10 @@ private:
   ImFont *m_font{};
 
   std::default_random_engine m_randomEngine;
+  std::uniform_int_distribution<int> m_randomDist{1, 3};
+
+  float control_time;
+  int score;
 
   void restart();
   void checkCollisions();
