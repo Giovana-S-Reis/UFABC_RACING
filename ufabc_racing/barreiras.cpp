@@ -20,26 +20,26 @@ void Barreiras::create(GLuint program, int quantity) {
   m_barreiras.clear();
   m_barreiras.resize(quantity);
 
-  for (auto &asteroid : m_barreiras) {
-    asteroid = makeBarreira();
+  for (auto &barreira : m_barreiras) {
+    barreira = makeBarreira();
 
-    // Make sure the asteroid won't collide with the carrinho
-      asteroid.m_translation = {m_randomDist(m_randomEngine), 1.5f};
+    // Make sure the barreira won't collide with the carrinho
+      barreira.m_translation = {m_randomDist(m_randomEngine), 1.5f};
   }
 }
 
 void Barreiras::paint() {
   abcg::glUseProgram(m_program);
 
-  for (auto const &asteroid : m_barreiras) {
-    abcg::glBindVertexArray(asteroid.m_VAO);
+  for (auto const &barreira : m_barreiras) {
+    abcg::glBindVertexArray(barreira.m_VAO);
 
-    abcg::glUniform4fv(m_colorLoc, 1, &asteroid.m_color.r);
-    abcg::glUniform1f(m_scaleLoc, asteroid.m_scale);
+    abcg::glUniform4fv(m_colorLoc, 1, &barreira.m_color.r);
+    abcg::glUniform1f(m_scaleLoc, barreira.m_scale);
 
     for (auto i : {0, 0, 0}) {
       for (auto j : {0, 0, 0}) {
-        abcg::glUniform2f(m_translationLoc, asteroid.m_translation.x + j, asteroid.m_translation.y + i);
+        abcg::glUniform2f(m_translationLoc, barreira.m_translation.x + j, barreira.m_translation.y + i);
 
         abcg::glDrawArrays(GL_TRIANGLE_FAN, 0, 14*3);
       }
@@ -53,25 +53,25 @@ void Barreiras::paint() {
 
 
 void Barreiras::destroy() {
-  for (auto &asteroid : m_barreiras) {
-    abcg::glDeleteBuffers(1, &asteroid.m_VBO);
-    abcg::glDeleteVertexArrays(1, &asteroid.m_VAO);
+  for (auto &barreira : m_barreiras) {
+    abcg::glDeleteBuffers(1, &barreira.m_VBO);
+    abcg::glDeleteVertexArrays(1, &barreira.m_VAO);
   }
 }
 
 void Barreiras::update(const Carrinho &carrinho, float deltaTime) {
-  for (auto &asteroid : m_barreiras) {
-    // Atualize a posição no eixo Y para fazer os asteroides deslizarem para baixo
-    asteroid.m_translation.y -= deltaTime * 1.2f;
+  for (auto &barreira : m_barreiras) {
+    // Atualize a posição no eixo Y para fazer os barreiraes deslizarem para baixo
+    barreira.m_translation.y -= deltaTime * 1.2f;
   }
 }
 
 
 Barreiras::Barreira Barreiras::makeBarreira(glm::vec2 translation,
                                             float scale) {
-  Barreira asteroid;
+  Barreira barreira;
 
-  // Define os vértices do asteroid com formato fixo
+  // Define os vértices do barreira com formato fixo
   std::array positions{
       glm::vec2{-3.0f, -1.0f}, glm::vec2{-3.0f, +1.0f},
       glm::vec2{+3.0f, +1.0f}, glm::vec2{+3.0f, -1.0f},
@@ -88,18 +88,18 @@ Barreiras::Barreira Barreiras::makeBarreira(glm::vec2 translation,
   // clang-format on
 
 
-  // Defina a escala, translação, velocidade e outras propriedades do asteroid
-  asteroid.m_polygonSides = positions.size() - 1;
-  asteroid.m_color = glm::vec4{1,0,0,1}; // Cor verde
-  asteroid.m_color.a = 1.0f;
-  asteroid.m_rotation = 0.0f;
-  asteroid.m_scale = scale;
-  asteroid.m_translation = translation;
-  asteroid.m_angularVelocity = m_randomDist(m_randomEngine);
+  // Defina a escala, translação, velocidade e outras propriedades do barreira
+  barreira.m_polygonSides = positions.size() - 1;
+  barreira.m_color = glm::vec4{1,0,0,1}; // Cor verde
+  barreira.m_color.a = 1.0f;
+  barreira.m_rotation = 0.0f;
+  barreira.m_scale = scale;
+  barreira.m_translation = translation;
+  barreira.m_angularVelocity = m_randomDist(m_randomEngine);
 
   // Crie o VBO (Buffer de Vértices)
-  abcg::glGenBuffers(1, &asteroid.m_VBO);
-  abcg::glBindBuffer(GL_ARRAY_BUFFER, asteroid.m_VBO);
+  abcg::glGenBuffers(1, &barreira.m_VBO);
+  abcg::glBindBuffer(GL_ARRAY_BUFFER, barreira.m_VBO);
   abcg::glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec2),
                      positions.data(), GL_STATIC_DRAW);
   abcg::glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -116,12 +116,12 @@ Barreiras::Barreira Barreiras::makeBarreira(glm::vec2 translation,
   abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   // Crie o VAO (Array de Vértices)
-  abcg::glGenVertexArrays(1, &asteroid.m_VAO);
+  abcg::glGenVertexArrays(1, &barreira.m_VAO);
 
   // Vincule os atributos de vértices ao VAO
-  abcg::glBindVertexArray(asteroid.m_VAO);
+  abcg::glBindVertexArray(barreira.m_VAO);
 
-  abcg::glBindBuffer(GL_ARRAY_BUFFER, asteroid.m_VBO);
+  abcg::glBindBuffer(GL_ARRAY_BUFFER, barreira.m_VBO);
   abcg::glEnableVertexAttribArray(positionAttribute);
   abcg::glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, GL_FALSE, 0,
                               nullptr);
@@ -130,5 +130,5 @@ Barreiras::Barreira Barreiras::makeBarreira(glm::vec2 translation,
   // Fim da vinculação ao VAO
   abcg::glBindVertexArray(0);
 
-  return asteroid;
+  return barreira;
 }

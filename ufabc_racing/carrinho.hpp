@@ -1,5 +1,5 @@
-#ifndef SHIP_HPP_
-#define SHIP_HPP_
+#ifndef CARRINHO_HPP_
+#define CARRINHO_HPP_
 
 #include "abcgOpenGL.hpp"
 

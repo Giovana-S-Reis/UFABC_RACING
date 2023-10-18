@@ -7,6 +7,7 @@
 
 #include "barreiras.hpp"
 #include "carrinho.hpp"
+#include "faixa.hpp"
 
 class Window : public abcg::OpenGLWindow {
 protected:
@@ -28,6 +29,8 @@ private:
 
   Barreiras m_barreiras;
   Carrinho m_carrinho;
+  Faixas m_faixas;
+
 
   abcg::Timer m_restartWaitTimer;
 

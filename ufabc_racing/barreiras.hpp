@@ -1,5 +1,5 @@
-#ifndef ASTEROIDS_HPP_
-#define ASTEROIDS_HPP_
+#ifndef BARREIRAS_HPP_
+#define BARREIRAS_HPP_
 
 #include <list>
 #include <random>
